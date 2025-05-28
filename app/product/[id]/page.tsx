@@ -11,6 +11,15 @@ import { useCart } from "@/hooks/useCart";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 
+export async function generateStaticParams() {
+  const products = await fetch("https://fakestoreapi.com/products").then(
+    (res) => res.json()
+  );
+  return products.map((product: any) => ({
+    id: product.id.toString(),
+  }));
+}
+
 export default function ProductPage() {
   const { id } = useParams();
   const product = getProductById(id as string);
@@ -38,7 +47,7 @@ export default function ProductPage() {
           ← Back to products
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="relative h-[400px] md:h-[500px] bg-white rounded-lg overflow-hidden">
           <Image
@@ -50,10 +59,12 @@ export default function ProductPage() {
             priority
           />
         </div>
-        
+
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.title}</h1>
-          
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {product.title}
+          </h1>
+
           <div className="flex items-center mb-4">
             {product.rating && (
               <>
@@ -64,22 +75,22 @@ export default function ProductPage() {
               </>
             )}
           </div>
-          
+
           <div className="text-2xl font-bold text-gray-900 mb-4">
             ${product.price}
           </div>
-          
+
           <p className="text-gray-700 mb-6">{product.description}</p>
-          
+
           <div className="mb-6">
             <h3 className="font-medium mb-2">Category</h3>
             <span className="inline-block bg-gray-100 px-3 py-1 rounded-full text-sm">
               {product.category}
             </span>
           </div>
-          
+
           <Separator className="my-6" />
-          
+
           <div className="mb-6">
             <h3 className="font-medium mb-3">Quantity</h3>
             <div className="flex items-center space-x-3">
@@ -91,9 +102,9 @@ export default function ProductPage() {
               >
                 <Minus className="h-4 w-4" />
               </Button>
-              
+
               <span className="w-8 text-center">{quantity}</span>
-              
+
               <Button
                 variant="outline"
                 size="icon"
@@ -103,8 +114,8 @@ export default function ProductPage() {
               </Button>
             </div>
           </div>
-          
-          <Button 
+
+          <Button
             className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-lg flex items-center justify-center gap-2"
             onClick={handleAddToCart}
           >
